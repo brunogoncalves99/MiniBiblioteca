@@ -251,19 +251,20 @@ Livros (1) ─────── (N) Alugueis
 
 ## 🎨 Screenshots
 
-### Tela de Login # Imagens ainda vão ser geradas
-![Login](docs/screenshots/login.png)
+### Tela de Login 
+<img width="1860" height="913" alt="Login" src="https://github.com/user-attachments/assets/a8198e1e-f01d-4efd-afa6-33c0ec36ea2d" />
 
 ### Dashboard Admin
-![Dashboard](docs/screenshots/dashboard.png)
+<img width="1913" height="913" alt="Dash" src="https://github.com/user-attachments/assets/f4ede869-ac96-4f68-87df-047576e763c1" />
 
 ### Catálogo de Livros
-![Livros](docs/screenshots/livros.png)
+<img width="1901" height="911" alt="Livros" src="https://github.com/user-attachments/assets/f093ac50-2d00-4045-b306-ff76bc8b6993" />
 
 ### Gerenciar Livros
-![Admin](docs/screenshots/gerenciar-livros.png)
+<img width="1904" height="908" alt="Dados" src="https://github.com/user-attachments/assets/34381115-8e34-4edd-83e4-eb0121b3e3b8" />
 
 ---
+
 
 ## 🧪 Testes
 ```bash
