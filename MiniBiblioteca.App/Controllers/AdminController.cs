@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MiniBiblioteca.App.Models;
 using MiniBiblioteca.Application.DTOs;
+using MiniBiblioteca.Application.Services;
 using MiniBiblioteca.Application.Validators;
 using MiniBiblioteca.Domain.Entities;
+using MiniBiblioteca.Domain.Enums;
 using MiniBiblioteca.Domain.Interfaces;
 using System.Diagnostics;
 
@@ -17,19 +19,16 @@ namespace MiniBiblioteca.App.Controllers
         private readonly IUsuarioService _usuarioService;
         private readonly IAluguelRepository _aluguelRepository;
         private readonly ILivroRepository _livroRepository;
+        private readonly IAuthService _authService;
 
-        public AdminController(
-            ILivroService livroService,
-            IAluguelService aluguelService,
-            IUsuarioService usuarioService,
-            IAluguelRepository aluguelRepository,
-            ILivroRepository livroRepository)
+        public AdminController(ILivroService livroService, IAluguelService aluguelService, IUsuarioService usuarioService, IAluguelRepository aluguelRepository, ILivroRepository livroRepository, IAuthService authService)
         {
             _livroService = livroService;
             _aluguelService = aluguelService;
             _usuarioService = usuarioService;
             _aluguelRepository = aluguelRepository;
             _livroRepository = livroRepository;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -58,7 +57,7 @@ namespace MiniBiblioteca.App.Controllers
                     AlugueisAtrasados = alugueisAtrasados.Count(),
                     TotalUsuarios = usuarios.Count(),
                     MultasAcumuladas = alugueisAtrasados.Sum(a => a.ValorMulta ?? 0),
-                    AlugueisRecentes = alugueisAtivos.Take(10).Select(a => new AluguelDTO
+                    AlugueisRecentes = alugueisAtivos.Take(1000).Select(a => new AluguelDTO
                     {
                         idAluguel = a.idAluguel,
                         NomeUsuario = a.Usuario.Nome,
@@ -100,6 +99,7 @@ namespace MiniBiblioteca.App.Controllers
                     QuantidadeDisponivel = l.QuantidadeDisponivel,
                     ImagemCapa = l.ImagemCapa,
                     Ativo = l.Ativo
+
                 }).ToList();
 
                 return Json(new { success = true, data = livrosDto });

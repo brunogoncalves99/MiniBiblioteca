@@ -1,0 +1,373 @@
+﻿@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2><i class="fas fa-user"></i> Gerenciar Usuários</h2>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <button class="btn btn-primary" onclick="abrirModalNovo()">
+            <i class="fas fa-plus"></i> Adicionar Novo Usuário
+        </button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="tableUsuarios" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>CPF</th>
+                                <th>Telefone</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Data Cadastro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar/Editar Usuário -->
+<div class="modal fade" id="modalUsuarios" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalUsuariosTitle">Adicionar Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUsuarios">
+                    <input type="hidden" id="idUsuario">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="nome" class="form-label">Nome Completo *</label>
+                                <input type="text" class="form-control" id="nome" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="cpf" class="form-label">CPF *</label>
+                                <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="telefone" class="form-label">Telefone *</label>
+                                <input type="text" class="form-control" id="telefone" placeholder="(00) 00000-0000" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="senha" class="form-label">Senha *</label>
+                                <input type="password" class="form-control" id="senha">
+                                <small class="text-muted">Mínimo 6 caracteres</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="confirmarSenha" class="form-label">Confirmar Senha *</label>
+                                <input type="password" class="form-control" id="confirmarSenha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isAdmin">
+                        <label class="form-check-label" for="isAdmin">
+                            Cadastrar como <strong>Administrador</strong>
+                        </label>
+                        <small class="form-text text-muted d-block">
+                            Deixe desmarcado para cadastrar como Usuário
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarUsuario()">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        let tableUsuarios;
+        let modal;
+        let isEditMode = false;
+
+        $(document).ready(function() {
+            // Máscaras
+            $('#cpf').mask('000.000.000-00');
+            $('#telefone').mask('(00) 00000-0000');
+
+            modal = new bootstrap.Modal(document.getElementById('modalUsuarios'));
+            carregarUsuarios();
+        });
+
+        function carregarUsuarios() {
+            $.ajax({
+                url: '@Url.Action("GetTodosUsuarios", "Usuario")',
+                type: 'GET',
+                success: function(response) {  // ← Era 'sucess', correto é 'success'
+                    if (response.success) {
+                        renderizarTabela(response.data);
+                    } else {
+                        Swal.fire('Erro', 'Erro ao carregar usuários', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Erro', 'Erro ao carregar usuários', 'error');
+                }
+            });
+        }
+
+        function renderizarTabela(usuarios) {
+            if (tableUsuarios) {
+                tableUsuarios.destroy();
+            }
+
+            
+
+            const tbody = $('#tableUsuarios tbody');
+            tbody.empty();
+
+            usuarios.forEach(function(usuario) {
+                debugger;
+                const statusBadge = usuario.ativo
+                    ? '<span class="badge bg-success">Ativo</span>'
+                    : '<span class="badge bg-danger">Inativo</span>';
+
+                const perfilBadge = usuario.tipo === 2  // ← Ajustado de tipoUsuario para tipo
+                    ? '<span class="badge bg-danger">Admin</span>'
+                    : '<span class="badge bg-info">Usuário</span>';
+
+                const cpfFormatado = formatarCPF(usuario.cpf);
+                const dataFormatada = new Date(usuario.dataCadastro).toLocaleDateString('pt-BR');
+
+                const row = `
+                    <tr>
+                        <td>${usuario.idUsuario}</td>
+                        <td>${usuario.nome}</td>
+                        <td>${usuario.email}</td>
+                        <td>${cpfFormatado}</td>
+                        <td>${usuario.telefone}</td>
+                        <td>${perfilBadge}</td>
+                        <td>${statusBadge}</td>
+                        <td>${dataFormatada}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editarUsuario(${usuario.idUsuario})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="removerUsuario(${usuario.idUsuario})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+
+            tableUsuarios = $('#tableUsuarios').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                },
+                order: [[0, 'desc']]
+            });
+        }
+
+        function formatarCPF(cpf) {
+            if (!cpf) return '';
+            cpf = cpf.replace(/\D/g, '');
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        function abrirModalNovo() {
+            isEditMode = false;
+            $('#modalUsuariosTitle').text('Adicionar Usuário');
+            $('#formUsuarios')[0].reset();
+            $('#idUsuario').val('');
+            $('#isAdmin').prop('checked', false);
+
+            // Tornar senha obrigatória no modo de criação
+            $('#senha').prop('required', true);
+            $('#confirmarSenha').prop('required', true);
+
+            modal.show();
+        }
+
+        function editarUsuario(id) {
+            isEditMode = true;
+            $('#modalUsuariosTitle').text('Editar Usuário');
+
+            $.ajax({
+                url: '@Url.Action("GetTodosUsuarios", "Usuario")',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        const usuario = response.data.find(u => u.id === id);
+                        if (usuario) {
+                            $('#idUsuario').val(usuario.id);
+                            $('#nome').val(usuario.nome);
+                            $('#email').val(usuario.email);
+                            $('#cpf').val(usuario.cpf);
+                            $('#telefone').val(usuario.telefone);
+                            $('#isAdmin').prop('checked', usuario.tipo === 2);
+
+                            // Limpar campos de senha
+                            $('#senha').val('');
+                            $('#confirmarSenha').val('');
+
+                            // Senha não obrigatória na edição
+                            $('#senha').prop('required', false);
+                            $('#confirmarSenha').prop('required', false);
+
+                            modal.show();
+                        }
+                    }
+                }
+            });
+        }
+
+        function salvarUsuario() {
+            const senha = $('#senha').val();
+            const confirmarSenha = $('#confirmarSenha').val();
+
+            // Validar senhas se foram preenchidas
+            if (senha || confirmarSenha) {
+                if (senha !== confirmarSenha) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'As senhas não coincidem'
+                    });
+                    return;
+                }
+
+                if (senha.length < 6) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'A senha deve ter no mínimo 6 caracteres'
+                    });
+                    return;
+                }
+            }
+
+            // Se for criação, senha é obrigatória
+            if (!isEditMode && !senha) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'A senha é obrigatória'
+                });
+                return;
+            }
+
+            const isAdmin = $('#isAdmin').is(':checked');
+
+            const usuario = {
+                id: $('#idUsuario').val() ? parseInt($('#idUsuario').val()) : 0,
+                nome: $('#nome').val(),
+                cpf: $('#cpf').val(),
+                email: $('#email').val().trim(),
+                telefone: $('#telefone').val(),
+                senha: senha || null,
+                tipo: isAdmin ? 2 : 1
+            };
+
+            const url = isEditMode
+                ? '@Url.Action("AtualizarUsuario", "Usuario")'
+                : '@Url.Action("CadastrarUsuario", "Usuario")';
+
+            const method = isEditMode ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json',
+                data: JSON.stringify(usuario),
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire('Sucesso!', response.message, 'success');
+                        modal.hide();
+                        carregarUsuarios();
+                    } else {
+                        Swal.fire('Erro', response.message, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Erro', 'Erro ao salvar usuário', 'error');
+                }
+            });
+        }
+
+        function removerUsuario(id) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'O usuário será desativado',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, remover',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("RemoverUsuario", "Usuario")/' + id,
+                        type: 'DELETE',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire('Removido!', response.message, 'success');
+                                carregarUsuarios();
+                            } else {
+                                Swal.fire('Erro', response.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Erro', 'Erro ao remover usuário', 'error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

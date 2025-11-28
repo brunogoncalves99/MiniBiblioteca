@@ -16,5 +16,7 @@ namespace MiniBiblioteca.Application.DTOs
         public string Telefone { get; set; }
         public string Senha { get; set; }
         public TipoUsuario Tipo { get; set; }
+        public bool Ativo { get; set; }
+        public DateTime DataCadastro { get; set; }
     }
 }

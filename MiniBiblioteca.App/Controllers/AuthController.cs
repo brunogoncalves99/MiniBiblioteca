@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MiniBiblioteca.Application.DTOs;
-using MiniBiblioteca.Application.Validators;
-using MiniBiblioteca.Domain.Entities;
 using MiniBiblioteca.Domain.Enums;
 using MiniBiblioteca.Domain.Interfaces;
 using System.Security.Claims;
@@ -62,47 +60,6 @@ namespace MiniBiblioteca.App.Controllers
                 var redirectUrl = usuario.Tipo == TipoUsuario.Admin ? Url.Action("Dashboard", "Admin") : Url.Action("Index", "Livro");
 
                 return Json(new { success = true, redirectUrl = redirectUrl });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        public IActionResult Registro()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Registro([FromBody] UsuarioDTO model)  
-        {
-            try
-            {
-                var usuario = new Usuario
-                {
-                    Nome = model.Nome,
-                    Email = model.Email,
-                    Cpf = model.CPF,
-                    Telefone = model.Telefone,
-                    Tipo = TipoUsuario.Usuario
-                };
-
-                var erros = UsuarioValidator.Validar(usuario, model.Senha);
-                if (erros.Any())
-                {
-                    return Json(new { success = false, message = string.Join(", ", erros) });
-                }
-
-                await _authService.RegistrarAsync(usuario, model.Senha);
-
-                return Json(new { success = true, message = "Cadastro realizado com sucesso! Faça login para continuar." });
             }
             catch (Exception ex)
             {
