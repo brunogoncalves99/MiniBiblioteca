@@ -1,0 +1,129 @@
+﻿/* wwwroot/css/admin.css */
+
+/* Dashboard Cards Específicos */
+.card.text-white h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card.text-white h6 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.card.text-white {
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+    .card.text-white:hover {
+        transform: scale(1.05);
+    }
+
+/* Tabela de Admin */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Botões de ação */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Modal customizado */
+.modal-header {
+    background-color: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-content {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Formulários */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-control, .form-select {
+    border-radius: 5px;
+}
+
+/* Cores dos cards de estatísticas */
+.bg-primary .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-success .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-warning .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-danger .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-info .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-secondary .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+.bg-dark .opacity-50 {
+    opacity: 0.3 !important;
+}
+
+/* Card header */
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #007bff;
+    font-weight: 600;
+}
+
+    .card-header h5 {
+        margin: 0;
+        color: #495057;
+    }
+
+/* Animações para os cards de estatísticas */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card.text-white h2 {
+    animation: countUp 0.5s ease-out;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card.text-white h2 {
+        font-size: 2rem;
+    }
+
+    .card.text-white h6 {
+        font-size: 0.8rem;
+    }
+}

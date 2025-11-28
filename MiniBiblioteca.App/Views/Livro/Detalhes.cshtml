@@ -1,0 +1,169 @@
+﻿@model MiniBiblioteca.Application.DTOs.LivroDTO
+
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="@Url.Action("Index", "Livro")" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="@(!string.IsNullOrEmpty(Model.ImagemCapa) ? Model.ImagemCapa : "/images/book-placeholder.jpg")"
+             class="img-fluid rounded shadow" alt="@Model.Titulo">
+    </div>
+
+    <div class="col-md-8">
+        <h2>@Model.Titulo</h2>
+        <h5 class="text-muted">por @Model.Autor</h5>
+        <hr />
+
+        <div class="mb-3">
+            <strong>NomeAutor:</strong> @(string.IsNullOrEmpty(Model.Autor) ? "N/A" : Model.Autor) <br />
+            <strong>Categoria:</strong> @(string.IsNullOrEmpty(Model.Categoria) ? "N/A" : Model.Categoria) <br />
+            <strong>Disponibilidade:</strong>
+            @if (Model.QuantidadeDisponivel > 0)
+            {
+                <span class="badge bg-success">@Model.QuantidadeDisponivel disponível(is)</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Indisponível</span>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Descricao))
+        {
+            <div class="mb-3">
+                <strong>Descrição:</strong>
+                <p>@Model.Descricao</p>
+            </div>
+        }
+
+        @if (Model.QuantidadeDisponivel > 0)
+        {
+            <button class="btn btn-primary btn-lg" onclick="abrirModalAluguel(@Model.idLivro, '@Model.Titulo')">
+                <i class="fas fa-shopping-cart"></i> Alugar Este Livro
+            </button>
+        }
+    </div>
+</div>
+
+<!-- Modal de Aluguel -->
+<div class="modal fade" id="modalAluguel" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Alugar Livro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formAluguel">
+                    <input type="hidden" id="idLivro" value="@Model.idLivro">
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Livro:</strong></label>
+                        <p id="tituloLivro">@Model.Titulo</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="diasAluguel" class="form-label">Por quantos dias?</label>
+                        <input type="number" class="form-control" id="diasAluguel" min="1" max="30" value="7" required>
+                        <small class="text-muted">Máximo: 30 dias</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Data prevista de devolução:</label>
+                        <p id="dataDevolucao" class="fw-bold"></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="observacoes" class="form-label">Observações (opcional)</label>
+                        <textarea class="form-control" id="observacoes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="confirmarAluguel()">
+                    <i class="fas fa-check"></i> Confirmar Aluguel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let modal;
+
+        $(document).ready(function() {
+            modal = new bootstrap.Modal(document.getElementById('modalAluguel'));
+            calcularDataDevolucao();
+
+            $('#diasAluguel').on('change', function() {
+                calcularDataDevolucao();
+            });
+        });
+
+        function abrirModalAluguel(idLivro, titulo) {
+            $('#idLivro').val(idLivro);
+            $('#tituloLivro').text(titulo);
+            calcularDataDevolucao();
+            modal.show();
+        }
+
+        function calcularDataDevolucao() {
+            const dias = parseInt($('#diasAluguel').val()) || 7;
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + dias);
+
+            const dataFormatada = hoje.toLocaleDateString('pt-BR');
+            $('#dataDevolucao').text(dataFormatada);
+        }
+
+        function confirmarAluguel() {
+            const data = {
+                idLivro: parseInt($('#idLivro').val()),
+                diasAluguel: parseInt($('#diasAluguel').val()),
+                observacoes: $('#observacoes').val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("RealizarAluguel", "Aluguel")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: response.message
+                        }).then(() => {
+                            window.location.href = '@Url.Action("MeusAlugueis", "Aluguel")';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Ocorreu um erro ao processar sua solicitação'
+                    });
+                }
+            });
+        }
+    </script>
+}
