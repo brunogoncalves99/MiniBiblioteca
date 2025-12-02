@@ -116,6 +116,11 @@ namespace MiniBiblioteca.Application.Services
             return await _aluguelRepository.GetTodosAlugueisAtivosAsync();
         }
 
+        public async Task<IEnumerable<Aluguel>> GetTodosAlugueisAsync()
+        {
+            return await _aluguelRepository.GetTodosAlugueisAsync();
+        }
+
         public async Task<IEnumerable<Aluguel>> GetAlugueisAtrasadosAsync()
         {
             return await _aluguelRepository.GetAlugueisAtrasadosAsync();

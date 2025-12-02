@@ -45,7 +45,8 @@ function renderizarLivros(livros) {
     }
 
     livros.forEach(function (livro) {
-        const disponibilidadeBadge = livro.quantidadeDisponivel > 0
+        debugger;
+        const disponibilidadeBadge = livro.quantidadeDisponivel
             ? `<span class="badge bg-success">${livro.quantidadeDisponivel} disponível(is)</span>`
             : '<span class="badge bg-danger">Indisponível</span>';
 

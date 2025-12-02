@@ -9,6 +9,7 @@ namespace MiniBiblioteca.Domain.Interfaces
         Task<IEnumerable<Aluguel>> GetAlugueisUsuarioAsync(int usuarioId);
         Task<IEnumerable<Aluguel>> GetAlugueisAtivosUsuarioAsync(int usuarioId);
         Task<IEnumerable<Aluguel>> GetTodosAlugueisAtivosAsync();
+        Task<IEnumerable<Aluguel>> GetTodosAlugueisAsync();
         Task<IEnumerable<Aluguel>> GetAlugueisAtrasadosAsync();
         Task AtualizarStatusAlugueisAsync();
         Task<decimal> CalcularMultaAsync(int aluguelId);

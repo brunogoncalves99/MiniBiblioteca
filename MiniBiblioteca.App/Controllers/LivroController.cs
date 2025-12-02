@@ -32,8 +32,7 @@ namespace MiniBiblioteca.App.Controllers
             try
             {
                 var livros = string.IsNullOrWhiteSpace(termo)
-                    ? await _livroService.GetLivrosDisponiveisAsync()
-                    : await _livroService.BuscarLivrosAsync(termo);
+                    ? await _livroService.GetTodosLivrosAsync() : await _livroService.BuscarLivrosAsync(termo);
 
                 var livrosDto = livros.Select(l => new LivroDTO
                 {

@@ -229,7 +229,7 @@ namespace MiniBiblioteca.App.Controllers
         {
             try
             {
-                var alugueis = await _aluguelService.GetTodosAlugueisAtivosAsync();
+                var alugueis = await _aluguelService.GetTodosAlugueisAsync();
                 var alugueisDto = alugueis.Select(a => new AluguelDTO
                 {
                     idAluguel = a.idAluguel,

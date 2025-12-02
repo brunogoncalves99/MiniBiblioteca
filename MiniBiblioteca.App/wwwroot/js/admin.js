@@ -1,5 +1,4 @@
-﻿// wwwroot/js/admin.js
-
+﻿
 $(document).ready(function () {
     carregarDashboard();
 });
@@ -21,6 +20,7 @@ function carregarDashboard() {
 }
 
 function atualizarCards(data) {
+    debugger;
     $('#totalLivros').text(data.totalLivros);
     $('#livrosDisponiveis').text(data.livrosDisponiveis);
     $('#livrosAlugados').text(data.livrosAlugados);
@@ -42,11 +42,17 @@ function renderizarAlugueisRecentes(alugueis) {
     alugueis.forEach(function (aluguel) {
         let statusBadge = '';
         switch (aluguel.status) {
-            case 1: // Ativo
+            case 1: 
                 statusBadge = '<span class="badge bg-success">Ativo</span>';
                 break;
-            case 3: // Atrasado
+            case 2:
+                statusBadge = '<span class="badge bg-info">Devolvido</span>';
+                break;
+            case 3: 
                 statusBadge = '<span class="badge bg-danger">Atrasado</span>';
+                break;
+            case 4:
+                statusBadge = '<span class="badge bg-warning">Devolvido com atraso</span>';
                 break;
         }
 

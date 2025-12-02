@@ -13,7 +13,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-list"></i> Todos os Aluguéis Ativos</h5>
+                <h5><i class="fas fa-list"></i> Todos os Aluguéis</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -27,10 +27,9 @@
                                 <th>Autor</th>
                                 <th>Data Aluguel</th>
                                 <th>Devolução Prevista</th>
-                                <th>Dias Aluguel</th>
+                                <th>Data Devolução</th>
                                 <th>Status</th>
                                 <th>Dias Restantes</th>
-                                <th>Multa</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -72,40 +71,57 @@
             const tbody = $('#tableAlugueis tbody');
             tbody.empty();
 
+            if (!alugueis || alugueis.length === 0) {
+                tbody.append('<tr><td colspan="10" class="text-center">Nenhum aluguel encontrado</td></tr>');
+                return;
+            }
+
+            const hoje = new Date();
+
             alugueis.forEach(function(aluguel) {
-                const hoje = new Date();
-                const dataPrevista = new Date(aluguel.dataPrevistaDevolucao);
-                const diffTime = dataPrevista - hoje;
-                const diasRestantes = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const statusBadge = getStatus(aluguel.status);
+                const isAtivo = aluguel.status === 1 || aluguel.status === 3;
 
-                let statusBadge = '';
-                if (aluguel.status === 1) { // Ativo
-                    statusBadge = '<span class="badge bg-success">Ativo</span>';
-                } else if (aluguel.status === 3) { // Atrasado
-                    statusBadge = '<span class="badge bg-danger">Atrasado</span>';
+                let diasRestantesTexto;
+                let dataDevolucao;
+
+                if (isAtivo) {
+                    dataDevolucao = '-';
+                    const dataPrevista = new Date(aluguel.dataPrevistaDevolucao);
+                    const dias = Math.ceil((dataPrevista - hoje) / (1000 * 60 * 60 * 24));
+
+                    if (dias < 0) {
+                        diasRestantesTexto = `<span class="text-danger">${Math.abs(dias)} dias atrasado</span>`;
+                    } else if (dias === 0) {
+                        diasRestantesTexto = `<span class="text-warning">Vence hoje</span>`;
+                    } else {
+                        diasRestantesTexto = `${dias} dias restantes`;
+                    }
+                } else {
+                    dataDevolucao = new Date(aluguel.dataDevolucao).toLocaleDateString('pt-BR');
+                    const dataPrevista = new Date(aluguel.dataPrevistaDevolucao);
+                    const dataEntregue = new Date(aluguel.dataDevolucao);
+                    const dias = Math.ceil((dataPrevista - dataEntregue) / (1000 * 60 * 60 * 24));
+
+                    if (dias < 0) {
+                        diasRestantesTexto = `<span class="text-danger">${Math.abs(dias)} dias de atraso</span>`;
+                    } else {
+                        diasRestantesTexto = `<span class="text-success">No prazo</span>`;
+                    }
                 }
-
-                let diasRestantesTexto = diasRestantes >= 0
-                    ? `${diasRestantes} dias`
-                    : `<span class="text-danger">${Math.abs(diasRestantes)} dias atrasado</span>`;
-
-                const multaTexto = aluguel.valorMulta
-                    ? `R$ ${aluguel.valorMulta.toFixed(2)}`
-                    : '-';
 
                 const row = `
                     <tr>
-                        <td>${aluguel.id}</td>
+                        <td>${aluguel.idAluguel}</td>
                         <td>${aluguel.nomeUsuario}</td>
                         <td>${aluguel.emailUsuario}</td>
                         <td>${aluguel.tituloLivro}</td>
-                        <td>${aluguel.autorLivro}</td>
+                        <td>${aluguel.nomeAutor}</td>
                         <td>${new Date(aluguel.dataAluguel).toLocaleDateString('pt-BR')}</td>
                         <td>${new Date(aluguel.dataPrevistaDevolucao).toLocaleDateString('pt-BR')}</td>
-                        <td>${aluguel.diasAluguel}</td>
+                        <td>${dataDevolucao}</td>
                         <td>${statusBadge}</td>
                         <td>${diasRestantesTexto}</td>
-                        <td>${multaTexto}</td>
                     </tr>
                 `;
                 tbody.append(row);
@@ -118,5 +134,34 @@
                 order: [[0, 'desc']]
             });
         }
+
+        function getStatus(status) {
+            let label, color;
+
+            switch(status) {
+                case 1:
+                    label = 'Ativo';
+                    color = 'success';
+                    break;
+                case 2: 
+                    label = 'Devolvido';
+                    color = 'info';
+                    break;
+                case 3: 
+                    label = 'Atrasado';
+                    color = 'danger';
+                    break;
+                case 4: 
+                    label = 'Devolvido com Atraso';
+                    color = 'warning';
+                    break;
+                default:
+                    label = 'Desconhecido';
+                    color = 'secondary';
+            }
+
+            return `<span class="badge bg-${color}">${label}</span>`;
+        }
+
     </script>
 }

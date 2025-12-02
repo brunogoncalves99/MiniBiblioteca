@@ -46,6 +46,13 @@ public class AluguelRepository : Repository<Aluguel>, IAluguelRepository
             .Where(a => a.Status == StatusAluguel.Ativo).ToListAsync();
     }
 
+    public async Task<IEnumerable<Aluguel>> GetTodosAlugueisAsync()
+    {
+        return await _dbSet
+            .Include(a => a.Usuario)
+            .Include(a => a.Livro).ToListAsync();
+    }
+
     public async Task<int> GetQuantidadeAlugueisAtivosPorUsuarioAsync(int usuarioId)
     {
         return await _dbSet

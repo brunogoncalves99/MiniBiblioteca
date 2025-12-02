@@ -14,6 +14,7 @@ namespace MiniBiblioteca.Domain.Interfaces
         Task<IEnumerable<Aluguel>> GetHistoricoUsuarioAsync(int usuarioId);
         Task<IEnumerable<Aluguel>> GetAlugueisAtivosPorLivroAsync(int livroId);
         Task<IEnumerable<Aluguel>> GetTodosAlugueisAtivosAsync();
+        Task<IEnumerable<Aluguel>> GetTodosAlugueisAsync();
         Task<int> GetQuantidadeAlugueisAtivosPorUsuarioAsync(int usuarioId);
     }
 }
