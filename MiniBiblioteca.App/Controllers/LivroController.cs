@@ -17,12 +17,15 @@ namespace MiniBiblioteca.App.Controllers
             _aluguelRepository = aluguelRepository;
         }
 
+        #region Index
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+        #endregion
 
+        #region Obter livros
         [HttpGet]
         public async Task<IActionResult> GetLivros(string termo = "")
         {
@@ -53,7 +56,9 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        #endregion
 
+        #region Obter detalhe do livro
         [HttpGet]
         public async Task<IActionResult> Detalhes(int id)
         {
@@ -84,5 +89,7 @@ namespace MiniBiblioteca.App.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        #endregion
     }
 }

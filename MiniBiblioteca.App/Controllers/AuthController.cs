@@ -17,6 +17,8 @@ namespace MiniBiblioteca.App.Controllers
             _authService = authService;
         }
 
+        #region Login
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -28,6 +30,9 @@ namespace MiniBiblioteca.App.Controllers
             return View();
         }
 
+        #endregion
+
+        #region Realizar Login no sistema
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
@@ -67,6 +72,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Logout
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -74,9 +82,14 @@ namespace MiniBiblioteca.App.Controllers
             return RedirectToAction("Login");
         }
 
+        #endregion
+
+        #region Acesso negado
         public IActionResult AccessDenied()
         {
             return View();
         }
+
+        #endregion
     }
 }

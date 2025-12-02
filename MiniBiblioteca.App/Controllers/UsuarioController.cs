@@ -20,6 +20,7 @@ namespace MiniBiblioteca.App.Controllers
             _authService = authService;
         }
 
+        #region Registro
         [HttpGet]
         public IActionResult Registro()
         {
@@ -30,7 +31,9 @@ namespace MiniBiblioteca.App.Controllers
 
             return View();
         }
+        #endregion
 
+        #region Criar Usuário
         [HttpPost]
         public async Task<IActionResult> Registro([FromBody] UsuarioDTO model)
         {
@@ -60,15 +63,19 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        #endregion
 
+        #region Gerenciar Usuário
         [HttpGet]
         public IActionResult GerenciarUsuario()
         {
             return View();
         }
+        #endregion
 
+        #region Obter todos Usuários
         /// <summary>
-        /// 
+        /// Metodo para obter todos os Usuarios
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -96,6 +103,8 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        #endregion
 
         #region Cadastrar Usuario
         /// <summary>
@@ -134,6 +143,7 @@ namespace MiniBiblioteca.App.Controllers
         }
         #endregion
 
+        #region Atualizar os dados dos usuários
         /// <summary>
         /// Metodo para atualizar Usuário
         /// </summary>
@@ -173,8 +183,11 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Deletar Usuário
         /// <summary>
-        /// 
+        /// Remover usuário do sistema, delete lógico.
         /// </summary>
         /// <param name="idUsuario"></param>
         /// <returns></returns>
@@ -198,5 +211,8 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        #endregion
+
     }
 }

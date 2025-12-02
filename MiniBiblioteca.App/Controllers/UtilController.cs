@@ -12,6 +12,7 @@ namespace MiniBiblioteca.App.Controllers
             _livroService = livroService;
         }
 
+        #region Correção de carregamento de imagens
         [HttpGet]
         public async Task<IActionResult> CorrigirImagensLivros()
         {
@@ -56,5 +57,7 @@ namespace MiniBiblioteca.App.Controllers
                 });
             }
         }
+
+        #endregion
     }
 }

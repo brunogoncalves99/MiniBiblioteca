@@ -44,7 +44,6 @@
     </div>
 </div>
 
-<!-- Modal Adicionar/Editar Usuário -->
 <div class="modal fade" id="modalUsuarios" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -136,7 +135,6 @@
         let isEditMode = false;
 
         $(document).ready(function() {
-            // Máscaras
             $('#cpf').mask('000.000.000-00');
             $('#telefone').mask('(00) 00000-0000');
 
@@ -148,7 +146,7 @@
             $.ajax({
                 url: '@Url.Action("GetTodosUsuarios", "Usuario")',
                 type: 'GET',
-                success: function(response) {  // ← Era 'sucess', correto é 'success'
+                success: function(response) {  
                     if (response.success) {
                         renderizarTabela(response.data);
                     } else {
@@ -177,7 +175,7 @@
                     ? '<span class="badge bg-success">Ativo</span>'
                     : '<span class="badge bg-danger">Inativo</span>';
 
-                const perfilBadge = usuario.tipo === 2  // ← Ajustado de tipoUsuario para tipo
+                const perfilBadge = usuario.tipo === 2  
                     ? '<span class="badge bg-danger">Admin</span>'
                     : '<span class="badge bg-info">Usuário</span>';
 
@@ -228,7 +226,6 @@
             $('#idUsuario').val('');
             $('#isAdmin').prop('checked', false);
 
-            // Tornar senha obrigatória no modo de criação
             $('#senha').prop('required', true);
             $('#confirmarSenha').prop('required', true);
 
@@ -253,11 +250,9 @@
                             $('#telefone').val(usuario.telefone);
                             $('#isAdmin').prop('checked', usuario.tipo === 2);
 
-                            // Limpar campos de senha
                             $('#senha').val('');
                             $('#confirmarSenha').val('');
 
-                            // Senha não obrigatória na edição
                             $('#senha').prop('required', false);
                             $('#confirmarSenha').prop('required', false);
 
@@ -272,7 +267,6 @@
             const senha = $('#senha').val();
             const confirmarSenha = $('#confirmarSenha').val();
 
-            // Validar senhas se foram preenchidas
             if (senha || confirmarSenha) {
                 if (senha !== confirmarSenha) {
                     Swal.fire({
@@ -293,7 +287,6 @@
                 }
             }
 
-            // Se for criação, senha é obrigatória
             if (!isEditMode && !senha) {
                 Swal.fire({
                     icon: 'error',

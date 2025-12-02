@@ -19,17 +19,23 @@ namespace MiniBiblioteca.App.Controllers
             _livroService = livroService;
         }
 
+        #region Obter ID Usuario logado
         private int GetUsuarioIdLogado()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(userId);
         }
+        #endregion
 
+        #region Meus Alugueis
         [HttpGet]
         public IActionResult MeusAlugueis()
         {
             return View();
         }
+        #endregion
+
+        #region Obter meus alugueis
 
         [HttpGet]
         public async Task<IActionResult> GetMeusAlugueis()
@@ -64,6 +70,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Obter Alugueis Ativos
         [HttpGet]
         public async Task<IActionResult> GetAlugueisAtivos()
         {
@@ -94,6 +103,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Realizar Aluguel
         [HttpPost]
         public async Task<IActionResult> RealizarAluguel([FromBody] CheckoutDTO model)
         {
@@ -120,6 +132,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Devolver Livro
         [HttpPost]
         public async Task<IActionResult> DevolverLivro(int id)
         {
@@ -137,6 +152,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Calcular Multa da devolução do livro
         [HttpGet]
         public async Task<IActionResult> CalcularMulta(int id)
         {
@@ -150,5 +168,7 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        #endregion
     }
 }

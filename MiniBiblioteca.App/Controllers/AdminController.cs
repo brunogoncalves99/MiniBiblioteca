@@ -31,11 +31,15 @@ namespace MiniBiblioteca.App.Controllers
             _authService = authService;
         }
 
+        #region Dashboard
         [HttpGet]
         public IActionResult Dashboard()
         {
             return View();
         }
+        #endregion
+
+        #region Obter Dashboard
 
         [HttpGet]
         public async Task<IActionResult> GetDashboardData()
@@ -76,12 +80,19 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Gerenciar Livro
+
         [HttpGet]
         public IActionResult GerenciarLivros()
         {
             return View();
         }
 
+        #endregion
+
+        #region Obter todos os Livros
         [HttpGet]
         public async Task<IActionResult> GetTodosLivros()
         {
@@ -110,6 +121,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Adicionar Livros
         [HttpPost]
         public async Task<IActionResult> AdicionarLivro([FromBody] LivroDTO model)
         {
@@ -142,6 +156,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Atualizar Livro
         [HttpPut]
         public async Task<IActionResult> AtualizarLivro([FromBody] LivroDTO model)
         {
@@ -178,6 +195,9 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Remover Livro
         [HttpDelete]
         public async Task<IActionResult> RemoverLivro([FromBody] int id)
         {
@@ -192,12 +212,18 @@ namespace MiniBiblioteca.App.Controllers
             }
         }
 
+        #endregion
+
+        #region Gerenciar Alugueis
         [HttpGet]
         public IActionResult GerenciarAlugueis()
         {
             return View();
         }
 
+        #endregion
+
+        #region Obter todos os Alugueis
         [HttpGet]
         public async Task<IActionResult> GetTodosAlugueis()
         {
@@ -229,11 +255,15 @@ namespace MiniBiblioteca.App.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        #endregion
 
+        #region Relatorio
         [HttpGet]
         public IActionResult Relatorios()
         {
             return View();
         }
+
+        #endregion
     }
 }
