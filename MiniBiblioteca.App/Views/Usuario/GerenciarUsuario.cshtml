@@ -146,7 +146,7 @@
             $.ajax({
                 url: '@Url.Action("GetTodosUsuarios", "Usuario")',
                 type: 'GET',
-                success: function(response) {  
+                success: function(response) {
                     if (response.success) {
                         renderizarTabela(response.data);
                     } else {
@@ -164,18 +164,17 @@
                 tableUsuarios.destroy();
             }
 
-            
+
 
             const tbody = $('#tableUsuarios tbody');
             tbody.empty();
 
             usuarios.forEach(function(usuario) {
-                debugger;
                 const statusBadge = usuario.ativo
                     ? '<span class="badge bg-success">Ativo</span>'
                     : '<span class="badge bg-danger">Inativo</span>';
 
-                const perfilBadge = usuario.tipo === 2  
+                const perfilBadge = usuario.tipo === 2
                     ? '<span class="badge bg-danger">Admin</span>'
                     : '<span class="badge bg-info">Usuário</span>';
 
@@ -232,7 +231,7 @@
             modal.show();
         }
 
-        function editarUsuario(id) {
+        function editarUsuario(idUsuario) {
             isEditMode = true;
             $('#modalUsuariosTitle').text('Editar Usuário');
 
@@ -241,9 +240,9 @@
                 type: 'GET',
                 success: function(response) {
                     if (response.success) {
-                        const usuario = response.data.find(u => u.id === id);
+                        const usuario = response.data.find(u => u.idUsuario === idUsuario);
                         if (usuario) {
-                            $('#idUsuario').val(usuario.id);
+                            $('#idUsuario').val(usuario.idUsuario);
                             $('#nome').val(usuario.nome);
                             $('#email').val(usuario.email);
                             $('#cpf').val(usuario.cpf);
@@ -266,6 +265,18 @@
         function salvarUsuario() {
             const senha = $('#senha').val();
             const confirmarSenha = $('#confirmarSenha').val();
+            const isAdmin = $('#isAdmin').is(':checked');
+
+            const usuario = {
+                idUsuario: $('#idUsuario').val() ? parseInt($('#idUsuario').val()) : 0,
+                nome: $('#nome').val(),
+                cpf: $('#cpf').val(),
+                email: $('#email').val().trim(),
+                telefone: $('#telefone').val(),
+                senha: senha || null,
+                tipo: isAdmin ? 2 : 1,
+                ativo : true
+            };
 
             if (senha || confirmarSenha) {
                 if (senha !== confirmarSenha) {
@@ -295,18 +306,7 @@
                 });
                 return;
             }
-
-            const isAdmin = $('#isAdmin').is(':checked');
-
-            const usuario = {
-                id: $('#idUsuario').val() ? parseInt($('#idUsuario').val()) : 0,
-                nome: $('#nome').val(),
-                cpf: $('#cpf').val(),
-                email: $('#email').val().trim(),
-                telefone: $('#telefone').val(),
-                senha: senha || null,
-                tipo: isAdmin ? 2 : 1
-            };
+            
 
             const url = isEditMode
                 ? '@Url.Action("AtualizarUsuario", "Usuario")'
@@ -320,6 +320,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(usuario),
                 success: function(response) {
+
                     if (response.success) {
                         Swal.fire('Sucesso!', response.message, 'success');
                         modal.hide();
@@ -334,7 +335,7 @@
             });
         }
 
-        function removerUsuario(id) {
+        function removerUsuario(idUsuario) {
             Swal.fire({
                 title: 'Tem certeza?',
                 text: 'O usuário será desativado',
@@ -345,9 +346,11 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '@Url.Action("RemoverUsuario", "Usuario")/' + id,
+                        url: '@Url.Action("RemoverUsuario", "Usuario")', 
                         type: 'DELETE',
+                        data: { idUsuario: idUsuario },
                         success: function(response) {
+
                             if (response.success) {
                                 Swal.fire('Removido!', response.message, 'success');
                                 carregarUsuarios();
@@ -362,5 +365,7 @@
                 }
             });
         }
+
+        
     </script>
 }

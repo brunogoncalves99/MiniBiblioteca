@@ -167,6 +167,8 @@ namespace MiniBiblioteca.App.Controllers
                 usuario.Ativo = model.Ativo;
                 usuario.Tipo = model.Tipo;
 
+                model.Senha = usuario.Senha;
+
                 var erros = UsuarioValidator.Validar(usuario, model.Senha);
                 if (erros.Any())
                 {
@@ -175,11 +177,11 @@ namespace MiniBiblioteca.App.Controllers
 
                 await _usuarioService.AtualizarUsuarioAsync(usuario);
 
-                return Json(new { sucess = true, message = "Usuário atualizado com sucesso!" });
+                return Json(new { success = true, message = "Usuário atualizado com sucesso!" });
             }
             catch (Exception ex)
             {
-                return Json(new { sucess = false, message = ex.Message });
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
@@ -192,7 +194,7 @@ namespace MiniBiblioteca.App.Controllers
         /// <param name="idUsuario"></param>
         /// <returns></returns>
         [HttpDelete]
-        public async Task <IActionResult> RemoverUsuario(int idUsuario)
+        public async Task<IActionResult> RemoverUsuario(int idUsuario)
         {
             try
             {

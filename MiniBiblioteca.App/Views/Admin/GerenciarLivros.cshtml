@@ -52,7 +52,7 @@
             </div>
             <div class="modal-body">
                 <form id="formLivro">
-                    <input type="hidden" id="livroId">
+                    <input type="hidden" id="idLivro">
 
                     <div class="row">
                         <div class="col-md-8">
@@ -184,7 +184,7 @@
             isEditMode = false;
             $('#modalLivroTitle').text('Adicionar Livro');
             $('#formLivro')[0].reset();
-            $('#livroId').val('');
+            $('#idLivro').val('');
             modal.show();
         }
 
@@ -199,7 +199,7 @@
                     if (response.success) {
                         const livro = response.data.find(l => l.id === id);
                         if (livro) {
-                            $('#livroId').val(livro.id);
+                            $('#idLivro').val(livro.idLivro);
                             $('#titulo').val(livro.titulo);
                             $('#autor').val(livro.autor);
                             $('#categoria').val(livro.categoria);
@@ -215,7 +215,7 @@
 
         function salvarLivro() {
             const livro = {
-                id: $('#livroId').val() ? parseInt($('#livroId').val()) : 0,
+                idLivro: $('#idLivro').val() ? parseInt($('#idLivro').val()) : 0,
                 titulo: $('#titulo').val(),
                 autor: $('#autor').val(),
                 categoria: $('#categoria').val(),
